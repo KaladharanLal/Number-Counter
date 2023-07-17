@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Counter</title>
+    <style>
+        *
+        {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-size: xx-large;
+            border-radius: 20px;
+            color: #fff;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif, Arial, Helvetica, sans-serif;
+        }
+        body
+        {
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            background:#000000;
+            overflow: hidden;
+        }
+        .title
+        {
+            position: absolute;
+            top: 20px;
+            font-size: 10vh;
+            animation: disappear 1s reverse;
+            color: rgba(255, 255, 255, 0.201);
+        }
+        .box
+        {
+            position: relative;
+            height: 150px;
+            width: 90%;
+            left: 50vw;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgb(80, 80, 80);
+            margin-top: 60px;
+        }
+        @keyframes appear
+        {
+            0% {top: 100%;}
+            100% {top: 50%;}
+        }
+        @keyframes disappear
+        {
+            0% {opacity: 1;}
+            80% {opacity: 0;}
+            100% {opacity: 0;}
+        }
+        @keyframes shrinkDisappear
+        {
+            0% {opacity: 1; height: 150px;}
+            80% {opacity: 0; height: 0;}
+            100% {opacity: 0;}
+        }
+        .text
+        {
+            position: absolute;
+            top: 50%;
+            left: 30px;
+            transform: translate(0, -50%);
+            height: 100px;
+            width: 30%;
+            font-size: larger;
+            text-align: center;
+            background-color: #333333;
+        }
+        .bt
+        {
+            position: absolute;
+            height: 100px;
+            width: 100px;
+            top: 15px;
+            right: 5px;
+            margin: 10px;
+            background-color: #333333;
+        }
+        .h
+        {
+            position: absolute;
+            height: 60px;
+            width: 40%;
+            left: 10px;
+            top: -40px;
+            background-color: #bbbbbb;
+            color: #000000;
+            font-size: larger;
+            text-align: center;
+        }
+        .del
+        {
+            position: absolute;
+            height: 50px;
+            width: 50px;
+            top: 50%;
+            transform: translate(0, -50%);
+            background-color: #383838;
+        }
+        #plus
+        {
+            position: absolute;
+            height: 60px;
+            width: 60px;
+            right: 10px;
+            bottom: 10px;
+            background-color: #383838;
+        }
+        #group
+        {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            overflow-y: scroll;
+        }
+        #vacant
+        {
+            position: relative;
+            height: 150px;
+            width: 90%;
+            left: 50vw;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+<body>
+    <div class="title">Number Counter</div>
+    <div id="group">
+        <div class="box" id="b0">
+            <input type="text" class="h" value="Count 1" id="Count 1" onkeyup="saveH(0)">
+            <button class="del" onclick="del(0)" style="right: 350px;">X</button>
+            <input type="text" class="text" id="t0" value="0" onkeyup="saveC(0)"></input>
+            <button class="bt" onclick="add(0)" style="right: 225px;">+</button>
+            <button class="bt" onclick="sub(0)" style="right: 115px;">-</button>
+            <button class="bt" onclick="reset(0)">C</button>
+        </div>
+        <div id="vacant"></div>
+    </div>
+    <button id="plus" onclick="addBox()">+</button>
+    <script>
+        var text = document.getElementsByClassName("text");
+        var Nofbox = 0;
+        data = [["Count 1", 0]];
+
+        if(localStorage.counterData == undefined)
+        {
+            localStorage.counterData = data;
+        }else{
+            data = localStorage.counterData;
+        }
+
+        function add(i)
+        {
+            document.getElementById(`t${i}`).value++;
+            saveC(i)
+        }
+        function sub(i)
+        {
+            document.getElementById(`t${i}`).value--;
+            saveC(i)
+        }
+        function reset(i)
+        {
+            document.getElementById(`t${i}`).value = 0;
+        }
+        function del(i)
+        {
+            if(text.length > 1)
+            {
+                document.getElementById(`b${i}`).style.animation = "shrinkDisappear .2s ease-in";
+            }
+            else
+            {
+                document.getElementById(`b${i}`).style.animation = "disappear .2s ease-in";
+            }
+            setTimeout(() => 
+                {
+                    document.getElementById("group").removeChild(document.getElementById(`b${i}`))
+                    data[i] = [null, 0]
+                }, 200)
+        }
+        function addBox()
+        {
+            Nofbox++
+            document.getElementById("group").removeChild(document.getElementById("vacant"))
+            document.getElementById("group").innerHTML += `
+            <div class="box" id="b${Nofbox}" style="animation: appear .2s ease-in;">
+                <input type="text" class="h" value="Count ${Nofbox+1}" id="Count ${Nofbox+1}"  onkeyup="saveH(${Nofbox})">
+                <button class="del" onclick="del(${Nofbox})" style="right: 350px;">X</button>
+                <input type="text" class="text" id = "t${Nofbox}" value="0" onkeyup="saveC(${Nofbox})"></input>
+                <button class="bt" onclick="add(${Nofbox})" style="right: 225px;">+</button>
+                <button class="bt" onclick="sub(${Nofbox})" style="right: 115px;">-</button>
+                <button class="bt" onclick="reset(${Nofbox})">C</button>
+            </div>
+            <div id="vacant"></div>`;
+            setTimeout(() => {document.getElementById(`b${Nofbox}`).style = "animation: none;"}, 200)
+            data.push([`Count ${Nofbox+1}`, 0])
+            for(var i=0; i<data.length; i++)
+            {
+                if(data[i][0] != null)
+                {
+                    document.getElementById(`Count ${i+1}`).value = data[i][0]
+                    document.getElementById(`t${i}`).value = data[i][1]
+                }
+            }
+        }
+        function saveH(h)
+        {
+            data[h][0] = document.getElementById(`Count ${h+1}`).value
+        }
+        function saveC(c)
+        {
+            data[c][1] = document.getElementById(`t${c}`).value
+        }
+    </script>
+</body>
+</html>
